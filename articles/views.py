@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
+from django.contrib import messages
 from .models import Article, Category
 from .forms import ArticleForm
 
@@ -46,6 +47,8 @@ class ArticleCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     
     def form_valid(self, form):
         form.instance.author = self.request.user
+        form.instance.is_published = True 
+        messages.success(self.request, "L'article a été créé et publié avec succès.")
         return super().form_valid(form)
 
 class ArticleUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

@@ -1,12 +1,9 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import ArticleViewSet, UserViewSet, AuthenticateView
-
-router = DefaultRouter()
-router.register(r'articles', ArticleViewSet, basename='article')
-router.register(r'users', UserViewSet, basename='user')
+from django.urls import path
+from .views import AuthView, UserListView, ArticleListView, CategoryArticleView
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('authenticate/', AuthenticateView.as_view(), name='authenticate'),
+    path('auth/', AuthView.as_view(), name='api-auth'),
+    path('users/', UserListView.as_view(), name='api-users'),
+    path('articles/', ArticleListView.as_view(), name='api-articles'),
+    path('articles/category/<int:category_id>/', CategoryArticleView.as_view(), name='api-category-articles'),
 ]
