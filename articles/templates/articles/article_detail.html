@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ article.title }} - NewsHub{% endblock %}
+
+{% block content %}
+<article class="mb-5">
+    <div class="mb-4">
+        <h1 class="fw-bold">{{ article.title }}</h1>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="text-muted">
+                <i class="fas fa-user"></i> {{ article.author.username }} | 
+                <i class="fas fa-calendar-alt"></i> {{ article.pub_date|date:"d/m/Y H:i" }}
+                {% if article.category %}
+                | <i class="fas fa-folder"></i> 
+                <a href="{% url 'category_articles' article.category.id %}" class="text-muted">
+                    {{ article.category.name }}
+                </a>
+                {% endif %}
+            </div>
+            
+            {% if user.is_authenticated and user.is_editor and user == article.author or user.is_admin %}
+            <div>
+                <a href="{% url 'article_update' article.pk %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+                <a href="{% url 'article_delete' article.pk %}" class="btn btn-sm btn-outline-danger">
+                    <i class="fas fa-trash"></i> Supprimer
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if article.image %}
+    <div class="mb-4 text-center">
+        <img src="{{ article.image.url }}" alt="{{ article.title }}" class="img-fluid rounded">
+        {% if article.image_caption %}
+        <p class="text-muted mt-2"><small>{{ article.image_caption }}</small></p>
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    <div class="article-content">
+        {{ article.content|linebreaks }}
+    </div>
+</article>
+
+<div class="d-flex justify-content-between mt-5">
+    <a href="{% url 'article_list' %}" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left"></i> Retour aux actualités
+    </a>
+    
+    <!-- Partager sur les réseaux sociaux -->
+    <div>
+        <span class="me-2">Partager :</span>
+        <a href="#" class="text-primary me-2"><i class="fab fa-facebook-f fa-lg"></i></a>
+        <a href="#" class="text-info me-2"><i class="fab fa-twitter fa-lg"></i></a>
+        <a href="#" class="text-danger"><i class="fab fa-instagram fa-lg"></i></a>
+    </div>
+</div>
+{% endblock %}
